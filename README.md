@@ -30,3 +30,22 @@ validation examples, and 2000 test examples.
 The text needs to be converted to some numeric representation first. Typically, you convert the text to sequences of 
 token IDs, which are used as indices into an embedding. One popular implementation builds subword tokenizers 
 (text.BertTokenizer) optimized for this dataset and exports them in a saved_model.
+
+# Positional encoding
+
+Attention layers see their input as a set of vectors, with no sequential order. This model also doesn't contain any 
+recurrent or convolutional layers. Because of this a "positional encoding" is added to give the model some information 
+about the relative position of tokens in the sentence.
+
+The positional encoding vector is added to the embedding vector. Embeddings represent a token in a d-dimensional space
+where tokens with similar meaning will be closer to each other. But the embeddings do not encode the relative position 
+of tokens in a sentence. So after adding the positional encoding, tokens will be closer to each other based on the 
+**similarity of their meaning and their position in the sentence**, in the d-dimensional space.
+
+The formula for calculating the positional encoding is as follows:
+
+![positional encoding](images/positional_encoding.png)
+
+## Intuition on the formula
+We want to bring word order information to transformers. How about we introduce a set of vectors containing the position
+information called position embeddings :thinking:
