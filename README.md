@@ -48,4 +48,51 @@ The formula for calculating the positional encoding is as follows:
 
 ## Intuition on the formula
 We want to bring word order information to transformers. How about we introduce a set of vectors containing the position
-information called position embeddings :thinking:
+information called position embeddings and add them to the previous embedding but what values should our position 
+embeddings contain :thinking:
+
+1. Why not simply consider the word position number
+
+![word position](images/word_position.png)
+
+adding the position information like this may significantly distort the embedding information, for example if the text 
+has 30 words, the last embedding will be added to the huge number of 30.
+
+2. What if instead we added fractions
+
+![word position fraction](images/word_position_fraction.png)
+
+This way the maximum embedding value will not surpass 1. It doesn't work either because making the position embeddings a 
+function of the total text length would mean **if the sentences differ in length they would possess different position 
+embeddings for the same position this may in turn confuse the model**
+
+![different length sentences](images/different_length_sentences.png)
+
+Ideally, the position embedding values at a given position should remain the same irrespective of the text or any other 
+factor.
+
+3. The authors used wave frequencies to capture position information. Let's take the first position embedding as an 
+example therefore the pos variable in the formula will be 0. Next the size of the position embedding has to be the same 
+as the word embedding this is represented by the letter d in the formula. The letter i here represents the indices of 
+each of the position embedding dimensions
+
+![word position frequency](images/word_position_frequency.png)
+
+### Why does it work?
+Now if we plot a sinusoidal curve by varying the variable indicating board positions on the x-axis we will get a smooth 
+looking curve, **since the curve height only varies between a fixed range and is not dependent on the text length**, 
+this method can help us overcome the limitation previously discussed.
+
+![sin curve](images/sin_curve.png)
+
+There is a problem though, note the embeddings of position 0 and 6 are exactly the same. This is when the next variable 
+in the equation, the i, comes to rescue. If we plot the curve at different values of i's we get a series of curves with 
+different frequencies. Now if you read the value of the position embedding for positions zero and six, for i=4 they will 
+be exactly the same but for i = 0 for example they are very different.
+
+![sin curves freq](images/sin_curves_freq.png)
+
+This is a positional encoding curve plotted on a full scale, as to get the value of a position embedding at a certain 
+dimension, you can simply read off the chart
+
+![positional encoding diagram](images/positional_encoding_diagram.png)
