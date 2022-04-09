@@ -96,3 +96,30 @@ This is a positional encoding curve plotted on a full scale, as to get the value
 dimension, you can simply read off the chart
 
 ![positional encoding diagram](images/positional_encoding_diagram.png)
+
+# Look-Ahead Masking
+The look-ahead mask is used to mask the future tokens in a sequence. In other words, the mask indicates which entries 
+should not be used.
+
+This means that to predict the third token, only the first and second token will be used. Similarly to predict the 
+fourth token, only the first, second and the third tokens will be used and so on.
+
+# Scaled Dot-Product Attention
+
+![scaled attention](images/scaled_attention.png)
+
+The attention function used by a transformer takes three inputs: Q(query), K(key), V(value). The equation used to 
+calculate the attention weights is:
+
+![Attention formula](images/Attention-formula.png)
+
+The dot-product attention is scaled by a factor of square root of the depth. This is done because for large values of 
+depth, the dot product grow large in magnitude pushing the softmax function where it has small gradients resulting in a 
+very hard softmax.
+
+For example, consider that "Q" and "K" have a mean of 0 and variance of 1. Their matrix multiplication will have a mean 
+of 0 and variance of "dk". So the square root of "dk" is used for scaling, so you get a consistent variance regardless 
+of the value of "dk". If the variance is too low the output may be too flat to optimize effectively. If the variance is 
+too high the softmax may saturate at initialization making it difficult to learn.
+
+https://www.youtube.com/watch?v=tIvKXrEDMhk
