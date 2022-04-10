@@ -105,6 +105,72 @@ This means that to predict the third token, only the first and second token will
 fourth token, only the first, second and the third tokens will be used and so on.
 
 # Scaled Dot-Product Attention
+This is a very important part of the transformers and was a little hard for me to understand in the first place. So I'm
+going to explain this part step by step and more detailed.
+
+## Overall
+We have a phrase let's say "Bank of the river" which is divided into separate tokens and for each token we have a word
+embedding or a vector and then these vectors would go into an attention mechanism and the goal was that once these 
+vectors come out of the attention mechanism, we end up with vectors that have a little more context.
+
+![overall](images/overall.png)
+
+In this example if we look at the word "bank", it is possible that "v1" represents money but because the word "river" is
+here, it shouldn't. The hope is that the attention mechanism will correct that by adding context to the embeddings.
+
+## Scaled Dot-Product with No Weight
+Let's continue with the four word embeddings, each of them is an array of numbers. But now let's say we want to add 
+context to the third vector. The first step is to calculate the dot product and this would give us the scores. The scores 
+are great but there is an issue and it's that the scores can be any value and we do like to keep things a little bit 
+contained so the next step will be to normalize them, the outputs are denoted by W, a nice property of all of these 
+weights is the sum of the Ws should be one. We started with vectors (Vs) and we reached to numbers (Ws). Now we are 
+going to reweigh everything together and then combine it.
+
+![no weight](images/no_weight.png)
+
+In the above picture the steps are shown only for the third vector (y3 is the contextualized representation of the third
+vector) but the steps will also be repeated for the other ones. One interesting thing here is that there are no weights 
+in any of this. Everything that we are doing here doesn't require parameters that are updated during a training loop but 
+if we actually introduce some of those parameters then maybe we can learn more patterns then maybe we have more flexible
+system.
+
+## Scaled Dot-Product with Weight
+When we consider the vectors that we start with (v1, v2, v3, v4), they're used 3 times (shown by arrows). How about we 
+don't change any of the operations in the middle but add some weights right there and maybe we can make a database 
+analogy here because you can say hey I have a "Query" here, I'm asking that the third vector get a little bit more 
+context. The initial word embedding vectors are the "keys" then when we've combined a query with the keys we want to get
+back the values. Well, the analogy with databases doesn't hold perfectly here but it gives us opportunity to give nice 
+names to parameters. So what we'll do is introducing query parameters, key parameters and value parameters
+
+![database analogy](images/database_analogy.png)
+
+Now let's think about how to add parameters, we have word embedding vectors, we can multiply that out with a matrix and
+get another vector out. So how about this, I'm going to create a matrix for all of my keys. So all the key vectors are
+going to get multiplied with this matrix called "key matrix". 
+
+![matrix multiplication](images/matrix_multiplication.png)
+
+Now these matrices values can be updated during training and this can be modeled by neural networks.
+
+## Complete Architecture
+I start with the word embeddings in the left (n vectors). Let's pass these vectors through linear layers, these layers 
+don't have bias term so they are exactly like matrix multiplication. If we then perform a matrix multiplication of the 
+output of the first two layers well then what comes out is a matrix of all of our scores and then if we normalize the 
+scores properly then we have our normalized weights like before and then at the end if we multiply that with our values
+what we get out is the collection of contextualized embeddings.
+
+![self attention block](images/self_attention_block.png)
+
+## Parameters Help
+Suppose the word embeddings go through the two self attention blocks so we have context being added twice and if all of 
+this is followed with a named entity recognition task then we are going to get a gradient signal coming back and this 
+signal helps to update these self attention blocks. Signals come in and it's propagating information back eventually to 
+the weights of my keys, queries and values layer. So now we got an attention mechanism that can learn and we can click 
+together.
+
+![gradient](images/gradient.png)
+
+# Summary
 
 ![scaled attention](images/scaled_attention.png)
 
@@ -122,4 +188,6 @@ of 0 and variance of "dk". So the square root of "dk" is used for scaling, so yo
 of the value of "dk". If the variance is too low the output may be too flat to optimize effectively. If the variance is 
 too high the softmax may saturate at initialization making it difficult to learn.
 
-https://www.youtube.com/watch?v=tIvKXrEDMhk
+The mask is multiplied with -1e9 (close to negative infinity). This is done because the mask is summed with the scaled 
+matrix multiplication of Q and K and is applied immediately before a softmax. The goal is to zero out these cells, and 
+large negative inputs to softmax are near zero in the output.
