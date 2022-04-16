@@ -170,7 +170,7 @@ together.
 
 ![gradient](images/gradient.png)
 
-# Summary
+## Summary
 
 ![scaled attention](images/scaled_attention.png)
 
@@ -191,3 +191,20 @@ too high the softmax may saturate at initialization making it difficult to learn
 The mask is multiplied with -1e9 (close to negative infinity). This is done because the mask is summed with the scaled 
 matrix multiplication of Q and K and is applied immediately before a softmax. The goal is to zero out these cells, and 
 large negative inputs to softmax are near zero in the output.
+
+# Multi-head attention
+
+![multi head attention](images/multi_head_attention.png)
+
+Multi-head attention consists of four parts:
+
+* Linear layers
+* Scaled dot-product attention
+* Final linear layer
+
+Each multi-head attention block gets three inputs; Q(query), K(key), V(value). These are put through linear (Dense) 
+layers before the multi-head attention function.
+
+Instead of one single attention head, Q, K and V are split into multiple heads because it allows the model to jointly 
+attend to information from different representation subspaces at different positions. After the split each head has a 
+reduced dimensionality, so the total computation cost is the same as a single head attention with full dimensionality.
