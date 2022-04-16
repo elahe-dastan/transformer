@@ -208,3 +208,6 @@ layers before the multi-head attention function.
 Instead of one single attention head, Q, K and V are split into multiple heads because it allows the model to jointly 
 attend to information from different representation subspaces at different positions. After the split each head has a 
 reduced dimensionality, so the total computation cost is the same as a single head attention with full dimensionality.
+
+# Point wise feed forward network
+Point wise feed forward network consists of two fully-connected layers with a ReLU activation in between.
