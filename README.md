@@ -211,3 +211,41 @@ reduced dimensionality, so the total computation cost is the same as a single he
 
 # Point wise feed forward network
 Point wise feed forward network consists of two fully-connected layers with a ReLU activation in between.
+
+# Encoder and decoder
+
+![encoder decoder](images/encoder_decoder.png)
+
+A transformer model follows the same general pattern as a standard sequence to sequence with attention model.
+
+* The input sentence is passed through N encoder layers that generates and output for each token in the sequence.
+* The decoder attends to the encoder's output and its own input (self-attention) to predict the next word.
+
+## Encoder layer
+Each encoder layer consists of sublayers:
+
+1. Muli-head attention (with padding mask)
+2. Point wise feed forward networks
+
+Each of these sublayers has a residual connection around it followed by a layer normalization. Residual connections help 
+in avoiding the vanishing gradient problem in deep networks.
+
+The output of each sublayer is LayerNorm(x + Sublayer(x)). The normalization is done on the d_model (last) axis. There 
+are N encoder layers in a transformer.
+
+## Decoder layer
+Each decoder layer consists of sublayers:
+
+1. Masked multi-head attention (with look ahead mask and padding mask)
+2. Multi-head attention (with padding mask). V (value) and K (key) receive the encoder output as inputs. Q (query) 
+receives the output from the masked multi-head attention sublayer.
+3. Point wise feed forward networks
+
+Each of these sublayers has a residual connection around it followed by a layer normalization. The output of each 
+sublayer is LayerNorm(x + Sublayer(x)). The normalization is done on the d_model (last) axis.
+
+There are a number of decoder layers in the model.
+
+As Q receives the output from decoder's first attention block, and K receives the encoder output, the attention weights 
+represent the importance given to the decoder's input based on the encoder's output. In other words, the decoder 
+predicts the next token by looking at the encoder output and self-attending to its own output. 
