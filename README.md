@@ -249,3 +249,12 @@ There are a number of decoder layers in the model.
 As Q receives the output from decoder's first attention block, and K receives the encoder output, the attention weights 
 represent the importance given to the decoder's input based on the encoder's output. In other words, the decoder 
 predicts the next token by looking at the encoder output and self-attending to its own output. 
+
+## Encoder
+The `Encoder` consists of:
+1. Input Embeddings
+2. Positional Embedding
+3. N encoder layers
+
+The input is put through an embedding which is summed with the positional encoding. The output of this summation is the
+input to the encoder layers. The output of the encoder is the input to the decoder
