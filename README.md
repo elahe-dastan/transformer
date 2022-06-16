@@ -257,4 +257,13 @@ The `Encoder` consists of:
 3. N encoder layers
 
 The input is put through an embedding which is summed with the positional encoding. The output of this summation is the
-input to the encoder layers. The output of the encoder is the input to the decoder
+input to the encoder layers. The output of the encoder is the input to the decoder.
+
+## Decoder
+The `Decoder` consists of:
+1. Output Embedding
+2. Positional Encoding
+3. N decoder layers
+
+The target is put through an embedding which is summed with the positional encoding. The output of this summation is the
+input to the decoder layers. The output of the decoder is the input to the final linear layer.
