@@ -1,3 +1,13 @@
 .idea
 *.zip
 ted_hrlr_translate_pt_en_converter
+
+ckpt-1.data-00000-of-00001
+ckpt-2.data-00000-of-00001
+ckpt-3.data-00000-of-00001
+ckpt-4.data-00000-of-00001
+
+ckpt-1.index
+ckpt-2.index
+ckpt-3.index
+ckpt-4.index
